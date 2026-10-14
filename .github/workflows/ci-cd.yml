@@ -8,7 +8,7 @@ on:
 
 jobs:
   testes-automatizados:
-    runs-on: ubuntu-latest # Máquina virtual do GitHub
+    runs-on: ubuntu-latest
 
     steps:
     - name: Fazer o checkout do código
@@ -23,3 +23,19 @@ jobs:
 
     - name: Instalar dependências e rodar TODOS os testes
       run: mvn clean test
+      continue-on-error: true # Faz a esteira continuar mesmo se um teste quebrar (para podermos ver a falha no relatório)
+
+    - name: Gerar o Relatório Allure
+      uses: simple-elf/allure-report-action@master
+      if: always()
+      with:
+        allure_results: target/allure-results
+        allure_history: allure-history
+
+    - name: Publicar relatório no GitHub Pages
+      uses: peaceiris/actions-gh-pages@v3
+      if: always()
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_branch: gh-pages
+        publish_dir: allure-history
