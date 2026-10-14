@@ -1,0 +1,25 @@
+name: Testes E2E e API - Automation Exercise
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
+
+jobs:
+  testes-automatizados:
+    runs-on: ubuntu-latest # Máquina virtual do GitHub
+
+    steps:
+    - name: Fazer o checkout do código
+      uses: actions/checkout@v3
+
+    - name: Configurar o Java (JDK 17)
+      uses: actions/setup-java@v3
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+        cache: 'maven'
+
+    - name: Instalar dependências e rodar TODOS os testes
+      run: mvn clean test
